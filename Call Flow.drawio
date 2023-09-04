@@ -1,0 +1,109 @@
+<mxfile host="app.diagrams.net" modified="2023-09-04T19:40:08.388Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0" etag="GNrZtv0sUR5iKpNiGeFM" version="21.7.2" type="device">
+  <diagram name="Page-1" id="raxpJVHNwwyo_JzEnL1-">
+    <mxGraphModel dx="1050" dy="1638" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="-n-PoWeyPSB70ujckZuc-6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-n-PoWeyPSB70ujckZuc-1" target="-n-PoWeyPSB70ujckZuc-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-n-PoWeyPSB70ujckZuc-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="-n-PoWeyPSB70ujckZuc-1" target="-n-PoWeyPSB70ujckZuc-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-n-PoWeyPSB70ujckZuc-1" value="/login" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="160" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-n-PoWeyPSB70ujckZuc-4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-n-PoWeyPSB70ujckZuc-2" target="-n-PoWeyPSB70ujckZuc-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-n-PoWeyPSB70ujckZuc-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="-n-PoWeyPSB70ujckZuc-2" target="-n-PoWeyPSB70ujckZuc-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-n-PoWeyPSB70ujckZuc-2" value="/sign-up" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="600" y="110" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-n-PoWeyPSB70ujckZuc-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="-n-PoWeyPSB70ujckZuc-3" target="-n-PoWeyPSB70ujckZuc-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-n-PoWeyPSB70ujckZuc-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="-n-PoWeyPSB70ujckZuc-3" target="-n-PoWeyPSB70ujckZuc-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-n-PoWeyPSB70ujckZuc-3" value="/confirm-user" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="480" y="300" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-n-PoWeyPSB70ujckZuc-13" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-n-PoWeyPSB70ujckZuc-5" target="-n-PoWeyPSB70ujckZuc-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-n-PoWeyPSB70ujckZuc-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-n-PoWeyPSB70ujckZuc-5" target="-n-PoWeyPSB70ujckZuc-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-n-PoWeyPSB70ujckZuc-5" value="/input-form" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="300" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-n-PoWeyPSB70ujckZuc-8" value="Cognito" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="20" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-n-PoWeyPSB70ujckZuc-22" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-n-PoWeyPSB70ujckZuc-12" target="-n-PoWeyPSB70ujckZuc-21">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-n-PoWeyPSB70ujckZuc-12" value="/submit-form" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="420" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-n-PoWeyPSB70ujckZuc-14" value="S3" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="570" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-n-PoWeyPSB70ujckZuc-20" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-n-PoWeyPSB70ujckZuc-16" target="-n-PoWeyPSB70ujckZuc-19">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-n-PoWeyPSB70ujckZuc-16" value="lambda (Save to Dynamo DB)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="630" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-n-PoWeyPSB70ujckZuc-25" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-n-PoWeyPSB70ujckZuc-19" target="-n-PoWeyPSB70ujckZuc-24">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-n-PoWeyPSB70ujckZuc-26" value="trigger" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="-n-PoWeyPSB70ujckZuc-25">
+          <mxGeometry x="-0.1143" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-n-PoWeyPSB70ujckZuc-19" value="dynamoDB" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="440" y="630" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-n-PoWeyPSB70ujckZuc-23" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-n-PoWeyPSB70ujckZuc-21" target="-n-PoWeyPSB70ujckZuc-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-n-PoWeyPSB70ujckZuc-21" value="API Gateway" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="240" y="530" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-n-PoWeyPSB70ujckZuc-28" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="-n-PoWeyPSB70ujckZuc-24" target="-n-PoWeyPSB70ujckZuc-27">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-n-PoWeyPSB70ujckZuc-24" value="lambda (Create EC2)" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="690" y="630" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-n-PoWeyPSB70ujckZuc-29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.7;entryY=1.033;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="-n-PoWeyPSB70ujckZuc-27" target="-n-PoWeyPSB70ujckZuc-19">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-n-PoWeyPSB70ujckZuc-30" value="Save to filetable" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="-n-PoWeyPSB70ujckZuc-29">
+          <mxGeometry x="-0.2847" y="3" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-n-PoWeyPSB70ujckZuc-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="-n-PoWeyPSB70ujckZuc-27" target="-n-PoWeyPSB70ujckZuc-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-n-PoWeyPSB70ujckZuc-32" value="Save output file" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="-n-PoWeyPSB70ujckZuc-31">
+          <mxGeometry x="0.1079" y="2" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-n-PoWeyPSB70ujckZuc-27" value="EC2 (Run script)" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="690" y="770" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="-n-PoWeyPSB70ujckZuc-33" value="&lt;i&gt;&lt;font style=&quot;font-size: 30px;&quot;&gt;Call flow&lt;/font&gt;&lt;/i&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="245" y="-100" width="360" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
