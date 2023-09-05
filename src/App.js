@@ -14,6 +14,7 @@ import Login from "./pages/auth/Login";
 import SignUp from "./pages/auth/SignUp";
 import AuthLayout from "./layouts/AuthLayout";
 import ConfirmUser from "./pages/auth/ConfirmUser";
+import Error404 from "./pages/Error";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -45,6 +46,8 @@ const router = createBrowserRouter(
         <Route path={pages.auth.sign_up} element={<SignUp />} />
         <Route path={pages.auth.confirm_user} element={<ConfirmUser />} />
       </Route>
+
+      <Route path="*" element={<Error404 />} />
     </Route>
   )
 );
