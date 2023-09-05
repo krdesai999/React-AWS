@@ -1,5 +1,5 @@
-const { Stack, Duration } = require('aws-cdk-lib');
-// const sqs = require('aws-cdk-lib/aws-sqs');
+const { Stack, RemovalPolicy } = require('aws-cdk-lib');
+const { UserPool } = require("aws-cdk-lib/aws-cognito");
 
 class InfraStack extends Stack {
   /**
@@ -11,12 +11,31 @@ class InfraStack extends Stack {
   constructor(scope, id, props) {
     super(scope, id, props);
 
-    // The code that defines your stack goes here
+    const usersPool = new UserPool(this, "Users", {
+      userPoolName: "Users",
+      signInCaseSensitive: false,
+      selfSignUpEnabled: true,
+      signInAliases: {
+        email: true,
+        username: true,
+      },
+      autoVerify: {
+        email: true,
+      },
+      passwordPolicy: {
+        minLength: 6,
+        requireLowercase: true,
+        requireUppercase: true,
+        requireDigits: true,
+      },
+      removalPolicy: RemovalPolicy.DESTROY,
+    });
 
-    // example resource
-    // const queue = new sqs.Queue(this, 'InfraQueue', {
-    //   visibilityTimeout: Duration.seconds(300)
-    // });
+    const userPoolID = usersPool.userPoolId;
+
+    // Client ID
+    const client = usersPool.addClient("ReactApp");
+    const clientID = client.userPoolClientId;
   }
 }
 
