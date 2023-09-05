@@ -1,5 +1,4 @@
 const rootPages = {
-    home: "/home",
     auth: "/auth",
     form: "/form",
 }
@@ -9,5 +8,6 @@ export const pages = {
   auth: {
     login: rootPages.auth + "/login",
     sign_up: rootPages.auth + "/sign-up",
+    confirm_user: rootPages.auth + "/confirm-user",
   },
 };
