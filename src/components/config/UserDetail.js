@@ -1,7 +1,7 @@
 
 export var userDetail = {
     userName: "",
-    authorizationToken: "",
+    authorizationToken: undefined,
     attributes: [],
     verified: false,
 }
