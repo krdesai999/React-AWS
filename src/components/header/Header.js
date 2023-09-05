@@ -1,19 +1,40 @@
 import { NavLink } from "react-router-dom";
+import { pages } from "../utils/PageDirection";
+import { useAuth } from "../Auth";
 
 export default function Header() {
-    return (
-      <header>
-        Fovus Keyur desai project
-        <nav>
-          <ul>
-            <li>
-              <NavLink>login</NavLink>
-            </li>
-            <li>
-              <NavLink>sign up</NavLink>
-            </li>
-          </ul>
-        </nav>
-      </header>
-    );
-};
+  const auth = useAuth();
+  return (
+    <header>
+      Fovus Keyur desai project
+      <nav>
+        <ul>
+          {!auth.user ? (
+            <div className="flex my-1">
+              <NavLink to={pages.auth.login} className="cursor-pointer btn">
+                Login
+              </NavLink>
+              <NavLink
+                to={pages.auth.sign_up}
+                className="ml-1 mr-1 cursor-pointer btn"
+              >
+                SignUp
+              </NavLink>
+            </div>
+          ) : !auth.user.authorizationToken ? (
+            <div>
+              <NavLink
+                to={pages.auth.confirm_user}
+                className="ml-1 mr-1 cursor-pointer btn"
+              >
+                Confirm user
+              </NavLink>
+            </div>
+          ) : (
+            <div className="profile-pic">Form</div>
+          )}
+        </ul>
+      </nav>
+    </header>
+  );
+}
