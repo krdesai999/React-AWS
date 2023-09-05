@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import { userDetail } from "./config/UserDetail";
-import { poolConfig } from "./config/config";
+import { poolConfig } from "./config/awsConfig";
 
 
 var AmazonCognitoIdentity = require("amazon-cognito-identity-js");
