@@ -19,6 +19,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "deploy": "npm install && npm run build && cd infra && npm install && npm run cdk-bootstrap && npm run cdk-synth && npm run cdk-deploy",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
