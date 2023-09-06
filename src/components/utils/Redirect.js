@@ -9,7 +9,9 @@ export default function Redirect({login = pages.auth.login , to}) {
         return <Navigate to={login} />
     }
     else {
-        console.log("Welcome to chirper!");
+        if (auth.user && !auth.user.verified) {
+            return <Navigate to={pages.auth.confirm_user} />;
+        }
         return <Navigate to={to} />
     }
 };
