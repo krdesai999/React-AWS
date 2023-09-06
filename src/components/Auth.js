@@ -68,12 +68,14 @@ export default function Authentication({ children }) {
     cognitoUser.authenticateUser(authenticationDetails, {
       onSuccess: function (result) {
         alert("Successfully logged in!");
+        let idToken = result.getIdToken().getJwtToken();
         var accessToken = result.getAccessToken().getJwtToken();
 
         // Set user details
         let tempUser = userDetail;
         tempUser.userName = userName;
         tempUser.authorizationToken = accessToken;
+        tempUser.idToken = idToken;
         tempUser.verified = true;
         auth.setUser(tempUser);
 
