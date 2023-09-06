@@ -44,8 +44,8 @@ export const passwordConfig = {
 };
 
 export const verificationCodeConfig = {
-  label: "Verification code",
-  id: "verification-code",
+  label: "Confirmation code",
+  id: "confirmationCode",
   placeholder: "Enter verification code",
   validation: {
     required: {
