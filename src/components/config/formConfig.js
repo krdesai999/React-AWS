@@ -1,6 +1,7 @@
 export const userNameConfig = {
   label: "Email",
   id: "email",
+  type: "text",
   placeholder: "Enter email",
   validation: {
     required: {
@@ -22,7 +23,7 @@ export const passwordConfig = {
   label: "Password",
   id: "password",
   placeholder: "Enter Password",
-  password: true,
+  type: "password",
   validation: {
     required: {
       value: true,
@@ -46,6 +47,7 @@ export const passwordConfig = {
 export const verificationCodeConfig = {
   label: "Confirmation code",
   id: "confirmationCode",
+  type: "text",
   placeholder: "Enter verification code",
   validation: {
     required: {
@@ -63,6 +65,7 @@ export const inputTextConfig = {
   label: "Input text",
   id: "inputText",
   placeholder: "Enter input text",
+  type: "text",
   validation: {
     required: {
       value: true,
@@ -71,6 +74,26 @@ export const inputTextConfig = {
     pattern: {
       value: /^[a-zA-Z0-9\s]+$/,
       message: "Only alphanumeric and space is allowed!",
+    },
+  },
+};
+
+export const fileUploadConfig = {
+  label: "File upload",
+  id: "fileUpload",
+  type: "file",
+  validation: {
+    required: {
+      value: true,
+      message: "File is required",
+    },
+    validate: (value) => {
+      const acceptedFormats = ["txt"];
+      const fileExtension = value[0]?.name.split(".").pop().toLowerCase();
+      if (!acceptedFormats.includes(fileExtension)) {
+        return "Invalid file format. Only txt files are allowed.";
+      }
+      return true;
     },
   },
 };
