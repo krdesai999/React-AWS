@@ -18,7 +18,7 @@ export default function InputText({
   id,
   placeholder,
   validation,
-  password = false,
+  type,
 }) {
   const {
     register,
@@ -31,7 +31,7 @@ export default function InputText({
         {label}
       </label>
       <input
-        type={password ? "password" : "text"}
+        type={type}
         className={id}
         placeholder={placeholder}
         {...register(id, validation)}
