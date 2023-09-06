@@ -1,7 +1,6 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { userDetail } from "./config/UserDetail";
 import { poolConfig } from "./config/awsConfig";
-
 
 var AmazonCognitoIdentity = require("amazon-cognito-identity-js");
 
@@ -21,18 +20,17 @@ function handleAttributes(attributes) {
 
 export const Auth = ({ children }) => {
   // Use setUserDetail to set user datails
-  const [user, setUser] = useState(sessionStorage.getItem("userDetail"));
+  const [user, setUser] = useState(
+    JSON.parse(sessionStorage.getItem("userDetail"))
+  );
 
-  const setUserDetail = (newUserDetail) => {
-    // This method saves into session storage also
-    setUser(newUserDetail);
-    sessionStorage.setItem("userDetail", user);
-  };
+  useEffect(() => {
+    console.log(user);
+    sessionStorage.setItem("userDetail", JSON.stringify(user));
+  }, [user]);
 
   return (
-    <AuthContext.Provider
-      value={{ user, setUserDetail }}
-    >
+    <AuthContext.Provider value={{ user, setUser }}>
       {children}
     </AuthContext.Provider>
   );
@@ -46,7 +44,7 @@ export const useAuth = () => {
 
 const AuthenticationContext = createContext();
 
-export default function Authentication({children}) {
+export default function Authentication({ children }) {
   const auth = useAuth();
 
   const login = (userName, password) => {
@@ -77,7 +75,7 @@ export default function Authentication({children}) {
         tempUser.userName = userName;
         tempUser.authorizationToken = accessToken;
         tempUser.verified = true;
-        auth.setUserDetail(tempUser);
+        auth.setUser(tempUser);
 
         // Get user details
         cognitoUser.getUserAttributes(function (err, result) {
@@ -101,17 +99,23 @@ export default function Authentication({children}) {
         });
 
         // Set user details with attributes
-        auth.setUserDetail(tempUser);
+        auth.setUser(tempUser);
       },
 
       onFailure: function (err) {
+        if (err.name === "UserNotConfirmedException") {
+          // Set user details
+          let tempUser = userDetail;
+          tempUser.userName = userName;
+          auth.setUser(tempUser);
+        }
         alert(err.message || JSON.stringify(err));
       },
     });
   };
 
   const logut = () => {
-    auth.setUserDetail(null);
+    auth.setUser(null);
   };
 
   const signUp = (userName, password, attributes = []) => {
@@ -131,6 +135,10 @@ export default function Authentication({children}) {
         if (err) {
           alert(err.message || JSON.stringify(err));
         } else {
+          // Set user details
+          let tempUser = userDetail;
+          tempUser.userName = userName;
+          auth.setUser(tempUser);
           alert("Successfully registered!");
           console.log(result);
         }
@@ -152,19 +160,35 @@ export default function Authentication({children}) {
         return;
       }
       console.log("call result: " + result);
-      auth.setUserDetail({ ...auth.user, verified: true });
+      auth.setUser(null);
     });
   };
 
-    return (
-      <AuthenticationContext.Provider
-        value={{ login, signUp, verifyUserCode, logut }}
-      >
-        {children}
-      </AuthenticationContext.Provider>
-    );
-};
+  const resendVerificationCode = () => {
+    let userPool = getPool();
+    var userData = {
+      Username: auth.user.userName,
+      Pool: userPool,
+    };
+
+    var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+    cognitoUser.resendConfirmationCode(function (err, result) {
+      if (err) {
+        alert(err.message || JSON.stringify(err));
+      }
+      console.log("call result: " + result);
+    });
+  };
+
+  return (
+    <AuthenticationContext.Provider
+      value={{ login, signUp, verifyUserCode, resendVerificationCode, logut }}
+    >
+      {children}
+    </AuthenticationContext.Provider>
+  );
+}
 
 export const useAuthentication = () => {
-  return useContext()
-}
+  return useContext(AuthenticationContext);
+};
