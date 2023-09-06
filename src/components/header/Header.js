@@ -31,7 +31,9 @@ export default function Header() {
               </NavLink>
             </div>
           ) : (
-            <div className="profile-pic">Form</div>
+            <div className="profile-pic">
+              <NavLink to={pages.form}>Form</NavLink>
+            </div>
           )}
         </ul>
       </nav>
