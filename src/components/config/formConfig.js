@@ -58,3 +58,19 @@ export const verificationCodeConfig = {
     },
   },
 };
+
+export const inputTextConfig = {
+  label: "Input text",
+  id: "inputText",
+  placeholder: "Enter input text",
+  validation: {
+    required: {
+      value: true,
+      message: "Input text is required",
+    },
+    pattern: {
+      value: /^[a-zA-Z0-9\s]+$/,
+      message: "Only alphanumeric and space is allowed!",
+    },
+  },
+};
