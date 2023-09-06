@@ -2,16 +2,17 @@ import InputText from "../../components/utils/inputText";
 import { FormProvider, useForm } from "react-hook-form";
 import { verificationCodeConfig } from "../../components/config/formConfig";
 import { Navigate } from "react-router";
-import { useAuth } from "../../components/Auth";
+import { useAuth, useAuthentication } from "../../components/Auth";
 import { pages } from "../../components/utils/PageDirection";
 
 export default function ConfirmUser() {
   const auth = useAuth();
+  const authMethods = useAuthentication();
 
   const methods = useForm({
     mode: "all",
     defaultValues: {
-      verificationCode: "",
+      confirmationCode: "",
     },
   });
 
@@ -21,8 +22,9 @@ export default function ConfirmUser() {
     return <Navigate to={pages.auth.login} />;
   }
 
+
   const onSubmit = methods.handleSubmit((data) => {
-    auth.verifyUserCode(data.verificationCode);
+    authMethods.verifyUserCode(data.confirmationCode);
   });
 
   return (
@@ -37,6 +39,9 @@ export default function ConfirmUser() {
           </div>
         </form>
       </FormProvider>
+      <button onClick={authMethods.resendVerificationCode}>
+        Resend confirmation code
+      </button>
     </div>
   );
 }

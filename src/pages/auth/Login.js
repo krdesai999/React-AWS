@@ -5,11 +5,12 @@ import {
   passwordConfig,
 } from "../../components/config/formConfig";
 import { Navigate } from "react-router";
-import { useAuth } from "../../components/Auth";
+import { useAuth, useAuthentication } from "../../components/Auth";
 import { pages } from "../../components/utils/PageDirection";
 
 export default function Login() {
   const auth = useAuth();
+  const authMethods = useAuthentication();
 
   const methods = useForm({
     mode: "all",
@@ -25,7 +26,7 @@ export default function Login() {
   }
 
   const onSubmit = methods.handleSubmit((data) => {
-    auth.login(data.email, data.password);
+    authMethods.login(data.email, data.password);
   });
 
   return (

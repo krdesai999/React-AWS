@@ -4,12 +4,13 @@ import {
   userNameConfig,
   passwordConfig,
 } from "../../components/config/formConfig";
-import { useAuth } from "../../components/Auth";
+import { useAuth, useAuthentication } from "../../components/Auth";
 import { Navigate } from "react-router-dom";
 import { pages } from "../../components/utils/PageDirection";
 
 export default function SignUp() {
   const auth = useAuth();
+  const authMethods = useAuthentication();
 
   // React hook default
   const methods = useForm({
@@ -40,7 +41,7 @@ export default function SignUp() {
 
   const onSubmit = methods.handleSubmit((data) => {
     data.attributes = handleAttributes(data);
-    auth.signUp(data.email, data.password, data.attributes);
+    authMethods.signUp(data.email, data.password, data.attributes);
   });
 
   return (
