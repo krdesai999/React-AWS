@@ -1,9 +1,12 @@
 export const awsConfig = {
   region: process.env.REACT_APP_REGION,
   ClientId: process.env.REACT_APP_CLIENT_ID,
+  UserPoolId: process.env.REACT_APP_USER_POOL_ID,
+  IdentityPoolId: process.env.REACT_APP_IDENTITY_POOL_ID,
+  S3Bucket: process.env.REACT_APP_S3_BUCKET,
 };
 
 export const poolConfig = {
-  UserPoolId: process.env.REACT_APP_USER_POOL_ID,
+  UserPoolId: awsConfig.UserPoolId,
   ClientId: awsConfig.ClientId,
 };
