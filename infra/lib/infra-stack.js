@@ -39,6 +39,8 @@ const {
   ServicePrincipal,
   ManagedPolicy,
   InstanceProfile,
+  PolicyStatement,
+  Effect,
 } = require("aws-cdk-lib/aws-iam");
 const { BucketDeployment, Source } = require("aws-cdk-lib/aws-s3-deployment");
 
@@ -138,6 +140,7 @@ class InfraStack extends Stack {
     const filedb = new Table(this, "filedb", {
       partitionKey: { name: "id", type: AttributeType.STRING },
       stream: StreamViewType.NEW_AND_OLD_IMAGES,
+      removalPolicy: RemovalPolicy.DESTROY,
     });
 
     // Insert to dynamodb lambda function
@@ -176,10 +179,24 @@ class InfraStack extends Stack {
     const ec2Role = new Role(this, "ec2Role", {
       assumedBy: new ServicePrincipal("ec2.amazonaws.com"),
     });
+    ec2Role.addManagedPolicy(
+      ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMFullAccess")
+    );
 
     // Granting necessary permissions to ec2 instance to be created
-    myS3.grantReadWrite(ec2Role);
-    filedb.grantReadWriteData(ec2Role);
+    ec2Role.addManagedPolicy(
+      ManagedPolicy.fromAwsManagedPolicyName("AmazonDynamoDBFullAccess")
+    );
+    ec2Role.addManagedPolicy(
+      ManagedPolicy.fromAwsManagedPolicyName("AmazonS3FullAccess")
+    );
+    ec2Role.addManagedPolicy(
+      ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMFullAccess")
+    );
+    ec2Role.addManagedPolicy(
+      ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMManagedInstanceCore")
+    );
+
 
     const ec2InstanceProfile = new InstanceProfile(this, "ec2InstanceProfile", {
       Role: ec2Role,
@@ -189,7 +206,7 @@ class InfraStack extends Stack {
     const lmdec2trigger = new Function(this, "lmdec2trigger", {
       functionName: "lmdec2trigger",
       runtime: Runtime.PYTHON_3_9,
-      timeout: Duration.seconds(20),
+      timeout: Duration.seconds(900),
       code: Code.fromAsset("resource/lambda"),
       handler: "lmdec2trigger.lambda_handler",
       environment: {
@@ -201,6 +218,20 @@ class InfraStack extends Stack {
       },
     });
 
+    lmdec2trigger.role.addToPolicy(
+      new PolicyStatement({
+        resources: [ec2InstanceProfile.role.roleArn],
+        effect: Effect.ALLOW,
+        actions: ["iam:PassRole"],
+      })
+      );
+
+    lmdec2trigger.role.addManagedPolicy(
+      ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMFullAccess")
+    );
+    lmdec2trigger.role.addManagedPolicy(
+      ManagedPolicy.fromAwsManagedPolicyName("AmazonEC2FullAccess")
+    );
     lmdec2trigger.addEventSource(
       new DynamoEventSource(filedb, {
         startingPosition: StartingPosition.TRIM_HORIZON,
@@ -208,9 +239,7 @@ class InfraStack extends Stack {
       })
     );
 
-    lmdec2trigger.role?.addManagedPolicy(
-      ManagedPolicy.fromAwsManagedPolicyName("AmazonEC2FullAccess")
-    );
+
 
     new CfnOutput(this, "bucketname", {
       value: myS3.bucketName,
