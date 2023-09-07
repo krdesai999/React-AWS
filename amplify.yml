@@ -7,8 +7,10 @@ frontend:
     build:
       commands:
         - echo "REACT_APP_REGION=us-east-1" >> .env
-        - echo "REACT_APP_CLIENT_ID=$CLIENT_ID" >> .env
+        - echo "REACT_APP_S3_BUCKET=$S3_BUCKET" >> .env
         - echo "REACT_APP_USER_POOL_ID=$USER_POOL_ID" >> .env
+        - echo "REACT_APP_IDENTITY_POOL_ID=$IDENTITY_POOL_ID" >> .env
+        - echo "REACT_APP_CLIENT_ID=$CLIENT_ID" >> .env
         - npm run build
   artifacts:
     baseDirectory: build
