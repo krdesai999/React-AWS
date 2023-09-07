@@ -111,31 +111,6 @@ class InfraStack extends Stack {
     // Grant permission to authenticated users
     myS3.grantPut(identityPool.authenticatedRole);
 
-    // Amplify
-    // const amplifyApp = new App(this, "Front-end-app", {
-    //   description: "Frontend Code",
-    //   sourceCodeProvider: new GitHubSourceCodeProvider({
-    //     owner: config.githubConfig.owner,
-    //     repository: config.githubConfig.repository,
-    //     oauthToken: SecretValue.unsafePlainText(config.githubConfig.oauthToken),
-    //   }),
-    //   environmentVariables: {
-    //     S3_BUCKET: myS3.bucketName,
-    //     USER_POOL_ID: userPoolID,
-    //     IDENTITY_POOL_ID: identityPool.identityPoolId,
-    //     CLIENT_ID: clientID,
-    //   },
-    // });
-
-    // amplifyApp.addBranch(config.githubConfig.productionBranch);
-
-    // Print out in the console; url of the amplify lauched portal
-    // new CfnOutput(this, "FrontEndUrl", {
-    //   value: amplifyApp.defaultDomain,
-    //   description: "URL for the deployed react app",
-    //   exportName: "FrontEndUrl",
-    // });
-
     //Dynamodb table definition
     const filedb = new Table(this, "filedb", {
       partitionKey: { name: "id", type: AttributeType.STRING },
@@ -197,7 +172,6 @@ class InfraStack extends Stack {
       ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMManagedInstanceCore")
     );
 
-
     const ec2InstanceProfile = new InstanceProfile(this, "ec2InstanceProfile", {
       Role: ec2Role,
     });
@@ -224,7 +198,7 @@ class InfraStack extends Stack {
         effect: Effect.ALLOW,
         actions: ["iam:PassRole"],
       })
-      );
+    );
 
     lmdec2trigger.role.addManagedPolicy(
       ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMFullAccess")
@@ -239,7 +213,33 @@ class InfraStack extends Stack {
       })
     );
 
+    // Amplify
+    const amplifyApp = new App(this, "Front-end-app", {
+      description: "Frontend Code",
+      sourceCodeProvider: new GitHubSourceCodeProvider({
+        owner: config.githubConfig.owner,
+        repository: config.githubConfig.repository,
+        oauthToken: SecretValue.unsafePlainText(config.githubConfig.oauthToken),
+      }),
+      environmentVariables: {
+        S3_BUCKET: myS3.bucketName,
+        USER_POOL_ID: userPoolID,
+        IDENTITY_POOL_ID: identityPool.identityPoolId,
+        CLIENT_ID: clientID,
+        REGION: this.region,
+        API_BASE_URL: UploadtoDbAPI.root.url,
+      },
+    });
 
+    amplifyApp.addBranch(config.githubConfig.productionBranch);
+
+    // Print out in the console; url of the amplify lauched portal
+    new CfnOutput(this, "FrontEndUrl", {
+      value:
+        config.githubConfig.productionBranch + "/" + amplifyApp.defaultDomain,
+      description: "URL for the deployed react app",
+      exportName: "FrontEndUrl",
+    });
 
     new CfnOutput(this, "bucketname", {
       value: myS3.bucketName,
