@@ -7,6 +7,7 @@ import { fileUploadConfig, inputTextConfig } from "../components/config/formConf
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { fromCognitoIdentityPool } from "@aws-sdk/credential-providers";
 import { awsConfig } from "../components/config/awsConfig";
+import { nanoid } from "nanoid";
 
 export default function Form() {
   const auth = useAuth();
@@ -58,6 +59,21 @@ export default function Form() {
     };
 
     uploadFile(data.fileUpload[0].name, data.fileUpload[0]);
+
+    const urlPayload = {
+      id: nanoid(),
+      input_text: data.inputText,
+      input_file_path: `${awsConfig.S3Bucket}/${data.fileUpload[0].name}`,
+    };
+
+    const response = fetch(awsConfig.ApiBaseURL, {
+      method: "POST",
+      headers: {
+        "Authorization": auth.user.idToken,
+      },
+      body: JSON.stringify(urlPayload),
+    });
+    console.log(response);
   });
 
   return (
