@@ -29,8 +29,12 @@ export const Auth = ({ children }) => {
     sessionStorage.setItem("userDetail", JSON.stringify(user));
   }, [user]);
 
+    const logut = () => {
+      setUser(null);
+    };
+
   return (
-    <AuthContext.Provider value={{ user, setUser }}>
+    <AuthContext.Provider value={{ user, setUser, logut }}>
       {children}
     </AuthContext.Provider>
   );
@@ -116,10 +120,6 @@ export default function Authentication({ children }) {
     });
   };
 
-  const logut = () => {
-    auth.setUser(null);
-  };
-
   const signUp = (userName, password, attributes = []) => {
     attributes = handleAttributes(attributes);
 
@@ -186,7 +186,7 @@ export default function Authentication({ children }) {
 
   return (
     <AuthenticationContext.Provider
-      value={{ login, signUp, verifyUserCode, resendVerificationCode, logut }}
+      value={{ login, signUp, verifyUserCode, resendVerificationCode }}
     >
       {children}
     </AuthenticationContext.Provider>

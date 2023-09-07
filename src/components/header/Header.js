@@ -33,6 +33,7 @@ export default function Header() {
           ) : (
             <div className="profile-pic">
               <NavLink to={pages.form}>Form</NavLink>
+              <button onClick={auth.logout}>Logout</button>
             </div>
           )}
         </ul>
