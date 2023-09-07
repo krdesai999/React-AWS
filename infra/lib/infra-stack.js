@@ -38,6 +38,7 @@ const {
   Role,
   ServicePrincipal,
   ManagedPolicy,
+  InstanceProfile,
 } = require("aws-cdk-lib/aws-iam");
 const { BucketDeployment, Source } = require("aws-cdk-lib/aws-s3-deployment");
 
@@ -97,10 +98,9 @@ class InfraStack extends Stack {
       autoDeleteObjects: true,
     });
 
-
     const appendToFile = "appendToFile.py";
     new BucketDeployment(this, "DeployWebsite", {
-      sources: [Source.asset(`resource/${appendToFile}`)],
+      sources: [Source.asset(`resource/ec2Script`)],
       destinationBucket: myS3,
     });
 
@@ -161,7 +161,13 @@ class InfraStack extends Stack {
     });
 
     // Api gateway
-    const UploadtoDbAPI = new RestApi(this, "insert-to-dynamo-api");
+    const UploadtoDbAPI = new RestApi(this, "insert-to-dynamo-api", {
+      defaultCorsPreflightOptions: {
+        allowOrigins: ["*"],
+        allowMethods: Cors.ALL_METHODS,
+      },
+    });
+
     UploadtoDbAPI.root.addMethod("POST", new LambdaIntegration(lambdaDbPut), {
       authorizer: auth,
       authorizationType: AuthorizationType.COGNITO,
@@ -175,6 +181,10 @@ class InfraStack extends Stack {
     myS3.grantReadWrite(ec2Role);
     filedb.grantReadWriteData(ec2Role);
 
+    const ec2InstanceProfile = InstanceProfile(this, "ec2InstanceProfile", {
+      Role: ec2Role,
+    });
+
     // lambda trigger ec2 creation
     const lmdec2trigger = new Function(this, "lmdec2trigger", {
       functionName: "lmdec2trigger",
@@ -185,7 +195,7 @@ class InfraStack extends Stack {
       environment: {
         TABLE_NAME: filedb.tableName,
         BUCKET_NAME: myS3.bucketName,
-        EC2_ROLE: ec2Role.roleName,
+        EC2_INSTANCE_PROFILE_NAME: ec2InstanceProfile.instanceProfileName,
         REGION: this.region,
         APPEND_TO_FILE_SCRIPT: appendToFile,
       },
@@ -193,7 +203,8 @@ class InfraStack extends Stack {
 
     lmdec2trigger.addEventSource(
       new DynamoEventSource(filedb, {
-        startingPosition: StartingPosition.LATEST,
+        startingPosition: StartingPosition.TRIM_HORIZON,
+        batchSize: 1,
       })
     );
 
