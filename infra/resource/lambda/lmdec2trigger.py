@@ -3,8 +3,9 @@ import boto3
 import time
 import os
 
-AMI = 'ami-05fa00d4c63e32376'
+AMI = 'ami-051f7e7f6c2f40dc1'
 INSTANCE_TYPE = 't2.micro'
+KEY_NAME = "FirstKeyPair"
 
 
 def handle_insert(record):
@@ -21,37 +22,24 @@ def handle_insert(record):
     input_file_path = newImage['input_file_path']['S']
 
     try:
-        print("creating client")
-        ec2 = boto3.resource('ec2')
-        print("creating ec2")
-        instance = ec2.create_instances(
-            ImageId=AMI,
-            InstanceType=INSTANCE_TYPE,
-            MaxCount=1,
-            MinCount=1,
-            IamInstanceProfile={
-                'Name': f'{os.environ.get("EC2_INSTANCE_PROFILE_NAME")}'
-            },
-        )
+        instance_id = "i-0e55f5103f7afb360"
 
-        print("New instance created: ")
-        print(instance[0])
-        instance_id = instance[0].instance_id
-        # time.sleep(111)
-
+        print("creating ssm client")
         # SSM client creating
         ssm = boto3.client("ssm")
 
+        print("Creating commands")
         # Commands creating
         commands = [f"aws s3 cp s3://{os.environ.get('BUCKET_NAME')}/{os.environ.get('APPEND_TO_FILE_SCRIPT')} .",
-            "python3 -m pip install boto3",
-            f"export TABLE_NAME={os.environ.get('TABLE_NAME')}",
-            f"export REGION={os.environ.get('REGION')}",
-            f"export BUCKET_NAME={os.environ.get('BUCKET_NAME')}",
-            f"python3 {os.environ.get('APPEND_TO_FILE_SCRIPT')} --id '{id}' --inputText '{inputText}' --inputPath '{input_file_path}'",
-            f"aws s3 cp {input_file_path.split('/')[-1]} s3://{os.environ.get('BUCKET_NAME')}/output_{input_file_path.split('/')[-1]}"
-            ]
+                    "python3 -m pip install boto3",
+                    f"export TABLE_NAME={os.environ.get('TABLE_NAME')}",
+                    f"export REGION={os.environ.get('REGION')}",
+                    f"export BUCKET_NAME={os.environ.get('BUCKET_NAME')}",
+                    f"python3 {os.environ.get('APPEND_TO_FILE_SCRIPT')} --id '{id}' --inputText '{inputText}' --inputPath '{input_file_path}'",
+                    f"aws s3 cp {input_file_path.split('/')[-1]} s3://{os.environ.get('BUCKET_NAME')}/output_{input_file_path.split('/')[-1]}",
+                    ]
 
+        print("sending commands")
         # Sending command to ec2
         response = ssm.send_command(
             InstanceIds=[instance_id],
@@ -61,6 +49,7 @@ def handle_insert(record):
             },
         )
 
+        print("Getting command id")
         time.sleep(50)
         command_id = response["Command"]["CommandId"]
 
@@ -68,24 +57,16 @@ def handle_insert(record):
         output = ssm.get_command_invocation(
             CommandId=command_id, InstanceId=instance_id)
         print(output)
-        print(instance['Instances'][0]['State'])
+        # print(instance['Instances'][0]['State'])
 
     except Exception as e:
         print("Exception: ")
         print(e)
     finally:
-        time.sleep(50)
-        ec2.terminate()
-        ec2 = boto3.client('ec2')
-
-        response = ec2.terminate_instances(
-            InstanceIds=[
-                instance_id,
-            ],
-        )
-        ec2.terminate_instances(InstanceIds=[instance_id])
-        ec2.get_waiter('instance_terminated')
-        print('Terminated instance: ' + str(instance_id))
+        # ec2.stop_instances(InstanceIds=[instance_id])
+        # ec2.get_waiter('instance_terminated')
+        # print('Terminated instance: ' + str(instance_id))
+        print("exiting insert handler")
 
 
 def lambda_handler(event, context):
@@ -96,13 +77,13 @@ def lambda_handler(event, context):
 
         print("Completed the ec2 trigger")
         return {
-                'statusCode': 200,
-                'body': json.dumps({'message': 'Success!'})
-            }
+            'statusCode': 200,
+            'body': json.dumps({'message': 'Success!'})
+        }
 
     except:
        print("Something went wrong in trigger")
        return {
-                'statusCode': 400,
-                'body': json.dumps({'message': 'Bad request'})
-            }
+           'statusCode': 400,
+           'body': json.dumps({'message': 'Bad request'})
+       }
