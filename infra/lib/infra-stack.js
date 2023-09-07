@@ -181,7 +181,7 @@ class InfraStack extends Stack {
     myS3.grantReadWrite(ec2Role);
     filedb.grantReadWriteData(ec2Role);
 
-    const ec2InstanceProfile = InstanceProfile(this, "ec2InstanceProfile", {
+    const ec2InstanceProfile = new InstanceProfile(this, "ec2InstanceProfile", {
       Role: ec2Role,
     });
 
