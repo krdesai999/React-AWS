@@ -27,7 +27,6 @@ class InfraStack extends Stack {
       selfSignUpEnabled: true,
       signInAliases: {
         email: true,
-        username: true,
       },
       autoVerify: {
         email: true,
