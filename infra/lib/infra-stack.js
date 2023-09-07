@@ -3,15 +3,43 @@ const {
   UserPoolAuthenticationProvider,
 } = require("@aws-cdk/aws-cognito-identitypool-alpha");
 
-const { Stack, RemovalPolicy, SecretValue, CfnOutput, Duration } = require("aws-cdk-lib");
+const {
+  Stack,
+  RemovalPolicy,
+  SecretValue,
+  CfnOutput,
+  Duration,
+} = require("aws-cdk-lib");
 const { UserPool } = require("aws-cdk-lib/aws-cognito");
 const { App, GitHubSourceCodeProvider } = require("@aws-cdk/aws-amplify-alpha");
 const { BlockPublicAccess, Bucket } = require("aws-cdk-lib/aws-s3");
-const {RestApi, LambdaIntegration, CognitoUserPoolsAuthorizer, AuthorizationType, Cors} = require('aws-cdk-lib/aws-apigateway');
-const {Function, Runtime, Code} = require('aws-cdk-lib/aws-lambda');
-const { Table, AttributeType } = require('aws-cdk-lib/aws-dynamodb');
+const {
+  RestApi,
+  LambdaIntegration,
+  CognitoUserPoolsAuthorizer,
+  AuthorizationType,
+  Cors,
+} = require("aws-cdk-lib/aws-apigateway");
+const {
+  Function,
+  Runtime,
+  Code,
+  StartingPosition,
+} = require("aws-cdk-lib/aws-lambda");
+const {
+  Table,
+  AttributeType,
+  StreamViewType,
+} = require("aws-cdk-lib/aws-dynamodb");
+const { DynamoEventSource } = require("aws-cdk-lib/aws-lambda-event-sources");
 
 const config = require("../config.js");
+const {
+  Role,
+  ServicePrincipal,
+  ManagedPolicy,
+} = require("aws-cdk-lib/aws-iam");
+const { BucketDeployment, Source } = require("aws-cdk-lib/aws-s3-deployment");
 
 class InfraStack extends Stack {
   /**
@@ -69,6 +97,13 @@ class InfraStack extends Stack {
       autoDeleteObjects: true,
     });
 
+
+    const appendToFile = "appendToFile.py";
+    new BucketDeployment(this, "DeployWebsite", {
+      sources: [Source.asset(`resource/${appendToFile}`)],
+      destinationBucket: myS3,
+    });
+
     myS3.addCorsRule(config.s3Config.corsRules);
 
     // Grant permission to authenticated users
@@ -102,6 +137,7 @@ class InfraStack extends Stack {
     //Dynamodb table definition
     const filedb = new Table(this, "filedb", {
       partitionKey: { name: "id", type: AttributeType.STRING },
+      stream: StreamViewType.NEW_AND_OLD_IMAGES,
     });
 
     // Insert to dynamodb lambda function
@@ -119,20 +155,51 @@ class InfraStack extends Stack {
     // permissions to lambda to dynamo table
     filedb.grantWriteData(lambdaDbPut);
 
-    const auth = new CognitoUserPoolsAuthorizer(
-      this,
-      "dynamo-put-Authorizer",
-      {
-        cognitoUserPools: [usersPool],
-      }
-    );
+    // Cognito authorizer
+    const auth = new CognitoUserPoolsAuthorizer(this, "dynamo-put-Authorizer", {
+      cognitoUserPools: [usersPool],
+    });
 
     // Api gateway
-    const dbAPI = new RestApi(this, "insert-to-dynamo-api");
-    dbAPI.root.addMethod("POST", new LambdaIntegration(lambdaDbPut), {
+    const UploadtoDbAPI = new RestApi(this, "insert-to-dynamo-api");
+    UploadtoDbAPI.root.addMethod("POST", new LambdaIntegration(lambdaDbPut), {
       authorizer: auth,
       authorizationType: AuthorizationType.COGNITO,
     });
+
+    const ec2Role = new Role(this, "ec2Role", {
+      assumedBy: new ServicePrincipal("ec2.amazonaws.com"),
+    });
+
+    // Granting necessary permissions to ec2 instance to be created
+    myS3.grantReadWrite(ec2Role);
+    filedb.grantReadWriteData(ec2Role);
+
+    // lambda trigger ec2 creation
+    const lmdec2trigger = new Function(this, "lmdec2trigger", {
+      functionName: "lmdec2trigger",
+      runtime: Runtime.PYTHON_3_9,
+      timeout: Duration.seconds(20),
+      code: Code.fromAsset("resource/lambda"),
+      handler: "lmdec2trigger.lambda_handler",
+      environment: {
+        TABLE_NAME: filedb.tableName,
+        BUCKET_NAME: myS3.bucketName,
+        EC2_ROLE: ec2Role.roleName,
+        REGION: this.region,
+        APPEND_TO_FILE_SCRIPT: appendToFile,
+      },
+    });
+
+    lmdec2trigger.addEventSource(
+      new DynamoEventSource(filedb, {
+        startingPosition: StartingPosition.LATEST,
+      })
+    );
+
+    lmdec2trigger.role?.addManagedPolicy(
+      ManagedPolicy.fromAwsManagedPolicyName("AmazonEC2FullAccess")
+    );
 
     new CfnOutput(this, "bucketname", {
       value: myS3.bucketName,
@@ -159,7 +226,7 @@ class InfraStack extends Stack {
     });
 
     new CfnOutput(this, "apigatewayURL", {
-      value: dbAPI.root.url,
+      value: UploadtoDbAPI.root.url,
       description: "apigatewayURL",
       exportName: "apigatewayURL",
     });
