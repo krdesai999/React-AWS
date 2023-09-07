@@ -1,4 +1,4 @@
-import { HttpMethods } from "aws-cdk-lib/aws-s3";
+const { HttpMethods } = require("aws-cdk-lib/aws-s3");
 const githubConfig = {
   owner: "krdesai999",
   remoteURL: "https://github.com/krdesai999/fovus-project.git",
