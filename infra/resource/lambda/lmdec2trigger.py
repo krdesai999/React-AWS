@@ -44,7 +44,12 @@ def handle_insert(record):
         ssm = boto3.client("ssm")
         commands = [f"aws s3 cp s3://{os.environ.get('BUCKET_NAME')}/{os.environ.get('APPEND_TO_FILE_SCRIPT')} .",
             "python3 -m pip install boto3",
-            f"python3 {os.environ.get('APPEND_TO_FILE_SCRIPT')} '{id}'"]
+            f"export TABLE_NAME={os.environ.get('TABLE_NAME')}",
+            f"export REGION={os.environ.get('REGION')}",
+            f"export BUCKET_NAME={os.environ.get('BUCKET_NAME')}",
+            f"python3 {os.environ.get('APPEND_TO_FILE_SCRIPT')} --id '{id}' --inputText '{inputText}' --inputPath '{input_file_path}'",
+            f"aws s3 cp {input_file_path.split('/')[-1]} s3://{os.environ.get('BUCKET_NAME')}/output_{input_file_path.split('/')[-1]}"
+            ]
 
         response = ssm.send_command(
             InstanceIds=[instance_id],
