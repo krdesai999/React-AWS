@@ -130,19 +130,21 @@ export default function Authentication({ children }) {
       attributes,
       null,
       function (err, result) {
-        console.log("Error: ");
-        console.log(err.name);
-        console.log("Result: ");
-        console.log(result);
-        if (err) {
-          alert(err.message || JSON.stringify(err));
-        } else {
+        if (
+          !err ||
+          err.name === "UsernameExistsException" ||
+          err.message === "err is null"
+        ) {
           // Set user details
           let tempUser = userDetail;
           tempUser.userName = userName;
           auth.setUser(tempUser);
           alert("Successfully registered!");
           console.log(result);
+        } else if (err && err.name) {
+          alert(err.message || JSON.stringify(err));
+        } else {
+          alert("something went wrong!");
         }
       }
     );
