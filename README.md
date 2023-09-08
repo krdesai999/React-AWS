@@ -1,4 +1,8 @@
 # Fovus Project
+I am Keyur Desai. I have been able to tackle all the requirements, including the bonus requirements mentioned in the specification document.
+
+##About the project
+
 [Infrastack](infra\lib\infra-stack.js) has the aws structure. It has all the instructions to build the whole infrastructure.
 
 I have used react hook form for validation and react router for routing.
@@ -12,7 +16,7 @@ After configuring config file,
 
 It'll push the portal on the amplify. But you'll have to initialize the 1st build. Afterwards on every commit it'll auto build.
 
-Then go to the website hosted by the amplify.
+Then go to the portal url provided by the amplify.
 
 EC2 takes very long time in booting so after it has booted up use the portal otherwise you won't see the output_[input_file_name].txt .
 
@@ -31,3 +35,16 @@ After the form is submitted there is NO RESPONSE. But check the s3 bucket for up
 
 
 run `cdk destroy` from infra folder to destroy the stack.
+
+## Screenshots
+![Input form flowbite tailwind](ReadMeImages/Input%20form%20flowbite%20tailwind.PNG)
+
+Above is the screen shot of the input form utilizing flowbite tailwind.
+
+![Responsive page](ReadMeImages/Responsive.PNG)
+
+Above is the screenshot showcasing responsive design.
+
+![Validation](ReadMeImages/validation.PNG)
+
+Above image shows the validation of the form, which is available on every form.
