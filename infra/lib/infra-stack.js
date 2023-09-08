@@ -3,6 +3,8 @@ const {
   UserPoolAuthenticationProvider,
 } = require("@aws-cdk/aws-cognito-identitypool-alpha");
 
+const { Instance, InstanceType, InstanceClass, InstanceSize, AmazonLinuxImage, AmazonLinuxGeneration } = require("aws-cdk-lib/aws-ec2");
+
 const {
   Stack,
   RemovalPolicy,
@@ -53,6 +55,22 @@ class InfraStack extends Stack {
    */
   constructor(scope, id, props) {
     super(scope, id, props);
+
+    // Role for ec2
+    const ec2Role = new Role(this, "ec2Role", {
+      assumedBy: new ServicePrincipal("ec2.amazonaws.com"),
+    });
+
+    const ec2 = new Instance(this, "targetInstance", {
+      instanceType: InstanceType.of(
+        InstanceClass.T2,
+        InstanceSize.MICRO
+      ),
+      machineImage: new AmazonLinuxImage({
+        generation: AmazonLinuxGeneration.AMAZON_LINUX_2,
+      }),
+      role: ec2Role,
+    });
 
     // Cognito user pool
     const usersPool = new UserPool(this, "Users", {
@@ -151,9 +169,6 @@ class InfraStack extends Stack {
       authorizationType: AuthorizationType.COGNITO,
     });
 
-    const ec2Role = new Role(this, "ec2Role", {
-      assumedBy: new ServicePrincipal("ec2.amazonaws.com"),
-    });
     ec2Role.addManagedPolicy(
       ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMFullAccess")
     );
@@ -189,6 +204,7 @@ class InfraStack extends Stack {
         EC2_INSTANCE_PROFILE_NAME: ec2InstanceProfile.instanceProfileName,
         REGION: this.region,
         APPEND_TO_FILE_SCRIPT: appendToFile,
+        EC2_INSTANCE_ID: ec2.instanceId,
       },
     });
 

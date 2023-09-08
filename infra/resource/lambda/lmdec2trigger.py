@@ -22,7 +22,7 @@ def handle_insert(record):
     input_file_path = newImage['input_file_path']['S']
 
     try:
-        instance_id = "i-0e55f5103f7afb360"
+        instance_id = os.environ.get("EC2_INSTANCE_ID")
 
         print("creating ssm client")
         # SSM client creating
