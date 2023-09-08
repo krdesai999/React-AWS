@@ -3,7 +3,7 @@ const {
   UserPoolAuthenticationProvider,
 } = require("@aws-cdk/aws-cognito-identitypool-alpha");
 
-const { Instance, InstanceType, InstanceClass, InstanceSize, AmazonLinuxImage, AmazonLinuxGeneration } = require("aws-cdk-lib/aws-ec2");
+const { Instance, InstanceType, InstanceClass, InstanceSize, AmazonLinuxImage, AmazonLinuxGeneration, Vpc, IpAddresses } = require("aws-cdk-lib/aws-ec2");
 
 const {
   Stack,
@@ -56,12 +56,20 @@ class InfraStack extends Stack {
   constructor(scope, id, props) {
     super(scope, id, props);
 
+    const vpc = new Vpc(this, "Vpc", {
+      ipAddresses: IpAddresses.cidr("10.0.0.0/16"),
+    });
+    vpc.applyRemovalPolicy(RemovalPolicy.DESTROY);
+
     // Role for ec2
     const ec2Role = new Role(this, "ec2Role", {
       assumedBy: new ServicePrincipal("ec2.amazonaws.com"),
     });
 
+    ec2Role.applyRemovalPolicy(RemovalPolicy.DESTROY);
+
     const ec2 = new Instance(this, "targetInstance", {
+      vpc: vpc,
       instanceType: InstanceType.of(
         InstanceClass.T2,
         InstanceSize.MICRO
@@ -71,6 +79,8 @@ class InfraStack extends Stack {
       }),
       role: ec2Role,
     });
+
+    ec2.applyRemovalPolicy(RemovalPolicy.DESTROY);
 
     // Cognito user pool
     const usersPool = new UserPool(this, "Users", {
@@ -111,6 +121,8 @@ class InfraStack extends Stack {
       },
     });
 
+    identityPool.applyRemovalPolicy(RemovalPolicy.DESTROY);
+
     // s3
     const myS3 = new Bucket(this, config.s3Config.bucketName, {
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
@@ -148,6 +160,8 @@ class InfraStack extends Stack {
       },
     });
 
+    lambdaDbPut.applyRemovalPolicy(RemovalPolicy.DESTROY);
+
     // permissions to lambda to dynamo table
     filedb.grantWriteData(lambdaDbPut);
 
@@ -163,6 +177,8 @@ class InfraStack extends Stack {
         allowMethods: Cors.ALL_METHODS,
       },
     });
+
+    UploadtoDbAPI.applyRemovalPolicy(RemovalPolicy.DESTROY);
 
     UploadtoDbAPI.root.addMethod("POST", new LambdaIntegration(lambdaDbPut), {
       authorizer: auth,
@@ -191,6 +207,8 @@ class InfraStack extends Stack {
       Role: ec2Role,
     });
 
+    ec2InstanceProfile.applyRemovalPolicy(RemovalPolicy.DESTROY);
+
     // lambda trigger ec2 creation
     const lmdec2trigger = new Function(this, "lmdec2trigger", {
       functionName: "lmdec2trigger",
@@ -207,6 +225,8 @@ class InfraStack extends Stack {
         EC2_INSTANCE_ID: ec2.instanceId,
       },
     });
+
+    lmdec2trigger.applyRemovalPolicy(RemovalPolicy.DESTROY);
 
     lmdec2trigger.role.addToPolicy(
       new PolicyStatement({
