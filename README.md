@@ -1,7 +1,21 @@
 # Fovus Project
 I am Keyur Desai. I have been able to tackle all the requirements, including the bonus requirements mentioned in the specification document.
 
-##About the project
+## Brainstorm Diagrams
+
+Below are the initial brainstorming diagrams of the system. It was drawn by me as a initial thought.
+
+![User flow](BrainstormDiagrams/UserFlow.png)
+
+This is the user flow of how a user will be using the website.
+
+![Call flow](BrainstormDiagrams/Call%20Flow.png)
+This is the flow of the calls which will be happening internally.
+
+![System design](BrainstormDiagrams/SystemDesign.png)
+This is the design of the system.
+
+## About the project
 
 [Infrastack](infra\lib\infra-stack.js) has the aws structure. It has all the instructions to build the whole infrastructure.
 
